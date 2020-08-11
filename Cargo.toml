@@ -5,11 +5,5 @@ authors = []
 edition = "2018"
 
 [dependencies]
-amethyst = "0.15.0"
+bevy = "0.1.2"
 spellang = { path = "spellang" }
-
-[features]
-default = ["vulkan"]
-empty = ["amethyst/empty"]
-metal = ["amethyst/metal"]
-vulkan = ["amethyst/vulkan"]
