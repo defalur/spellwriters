@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 mod arena;
 mod resources;
+mod character;
 
 fn main() {
     App::build()
@@ -14,6 +15,7 @@ fn main() {
         .add_default_plugins()
         .add_plugin(resources::ResourcePlugin)
         .add_plugin(arena::ArenaPlugin)
+        .add_plugin(character::CharacterPlugin)
         .add_startup_system(setup.system())
         .run();
 }

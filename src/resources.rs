@@ -5,6 +5,7 @@ pub struct ResourcePlugin;
 #[derive(Default)]
 pub struct ResourceHandles {
     pub ground_sheet: Handle<TextureAtlas>,
+    pub char_sheet: Handle<TextureAtlas>,
 }
 
 impl Plugin for ResourcePlugin {
@@ -33,5 +34,17 @@ fn setup(
     let texture_atlas = TextureAtlas::from_grid(texture_handle, texture.size, 40, 36);
 
     resources.ground_sheet = texture_atlases.add(texture_atlas);
-    println!("{:?}", resources.ground_sheet);
+
+    let texture_handle = asset_server
+        .load_sync(
+            &mut textures,
+            "assets/textures/chars.png",
+        )
+        .unwrap();
+
+    let texture = textures.get(&texture_handle).unwrap();
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, texture.size, 16, 16);
+
+    resources.char_sheet = texture_atlases.add(texture_atlas);
+    println!("{:?}", resources.char_sheet);
 }
