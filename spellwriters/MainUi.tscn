@@ -3,8 +3,9 @@
 [ext_resource path="res://MainUi.gd" type="Script" id=1]
 
 [node name="MainUi" type="Control"]
+margin_top = -0.396851
 margin_right = 320.0
-margin_bottom = 180.0
+margin_bottom = 179.603
 mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -25,13 +26,14 @@ __meta__ = {
 }
 
 [node name="SpellBox" type="TextEdit" parent="."]
-margin_right = 135.0
-margin_bottom = 20.0
+margin_right = 133.0
+margin_bottom = 18.0
 
 [node name="SpellValidate" type="Button" parent="."]
 margin_left = 136.397
+margin_top = -0.396851
 margin_right = 166.397
-margin_bottom = 20.0
+margin_bottom = 19.6031
 text = "Ok"
 expand_icon = true
 __meta__ = {
