@@ -38,37 +38,50 @@ pub enum EffectType {
     Amplify,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub struct RuneCombination {
-    a: RuneMaterial,
-    b: RuneMaterial,
-    combined: Option<RuneMaterial>,
+    a: &'static str,
+    b: &'static str,
+    combined: Option<&'static str>,
 }
 
 const RUNE_COMBINATIONS: [RuneCombination; 3] = [
-    RuneCombination{a: "frost", b: "water", combined: Some("ice")},
-    RuneCombination{a: "fire", b: "ice", combined: Some("water")},
-    RuneCombination{a: "fire", b: "frost", combined: None},
+    RuneCombination{
+        a: "frost",
+        b: "water",
+        combined: Some("ice")},
+    RuneCombination{
+        a: "fire",
+        b: "ice",
+        combined: Some("water")},
+    RuneCombination{
+        a: "fire",
+        b: "frost",
+        combined: None},
 ];
 
-pub fn compute_combination(a: &RuneMaterial, b: &RuneMaterial) -> (bool, Option<RuneMaterial>) {
+pub fn compute_combination(a: &String, b: &String) -> (bool, Option<String>) {
     let mut result = None;
     let mut found = false;
     for c in RUNE_COMBINATIONS.iter() {
         if c.a == *a {
             if c.b == *b {
-                result = c.combined;
+                result = c.combined.clone();
                 found = true;
             }
         }
         else if c.b == *a {
             if c.a == *b {
-                result = c.combined;
+                result = c.combined.clone();
                 found = true;
             }
         }
     }
 
+    let result = match result {
+        Some(s) => Some(s.to_string()),
+        _ => None
+    };
     (found, result)
 }
 
@@ -156,18 +169,18 @@ lazy_static! {
     ];
 }
 
-pub fn find_mat(mat: String) -> Option<MatRune> {
+pub fn find_mat(mat: &String) -> Option<MatRune> {
     match RUNES.iter().find(
         |x|
         if let Rune::Material(m) = x {
-            m.mat == mat
+            &m.mat == mat
         }
         else {
             false
         }) {
         Some(m) => {
             if let Rune::Material(res) = m {
-                Some(*res)
+                Some(res.clone())
             }
             else {
                 None
@@ -181,18 +194,18 @@ pub fn translate_runes(input: &str) -> Vec<Rune> {
     let mut result = Vec::new();
     for c in input.chars() {
         match c {
-            'P' => result.push(RUNES[0]),//projectile
-            'B' => result.push(RUNES[1]),//beam
-            'S' => result.push(RUNES[2]),//statue
-            'A' => result.push(RUNES[3]),//area
-            'F' => result.push(RUNES[4]),//focus
-            'f' => result.push(RUNES[5]),//fire
-            'l' => result.push(RUNES[6]),//life
-            's' => result.push(RUNES[7]),//stone
-            'a' => result.push(RUNES[8]),//air
-            'w' => result.push(RUNES[9]),//water
-            'r' => result.push(RUNES[10]),//frost
-            'i' => result.push(RUNES[11]),//ice
+            'P' => result.push(RUNES[0].clone()),//projectile
+            'B' => result.push(RUNES[1].clone()),//beam
+            'S' => result.push(RUNES[2].clone()),//statue
+            'A' => result.push(RUNES[3].clone()),//area
+            'F' => result.push(RUNES[4].clone()),//focus
+            'f' => result.push(RUNES[5].clone()),//fire
+            'l' => result.push(RUNES[6].clone()),//life
+            's' => result.push(RUNES[7].clone()),//stone
+            'a' => result.push(RUNES[8].clone()),//air
+            'w' => result.push(RUNES[9].clone()),//water
+            'r' => result.push(RUNES[10].clone()),//frost
+            'i' => result.push(RUNES[11].clone()),//ice
             _ => (),
         };
     }

@@ -23,7 +23,7 @@ impl SpellCompiler {
     }
 
     #[export]
-    fn compile_spell(&self, _owner: &Node, input: GodotString) -> Option<spellprocessing::Spell> {
+    fn compile_spell(&self, _owner: &Node, input: GodotString) -> Vec<GodotString> {
         let input = &input.to_string();
         let runes = rune::translate_runes(input);
         //println!("RuneSeq: {:?}\n\n", runes);
@@ -31,10 +31,10 @@ impl SpellCompiler {
 
         let spellseq = match spellparser::spell_parse(runes){
             Ok(seq) => seq,
-            _ => {return None;}
+            _ => {return Vec::new();}
         };
 
-        Some(spellprocessing::create_spell(spellseq))
+        spellprocessing::create_spell(spellseq).to_gdseq()
     }
 }
 

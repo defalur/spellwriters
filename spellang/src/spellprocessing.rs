@@ -1,10 +1,11 @@
 use crate::spellparser::{self, SpellSeq};
 use crate::rune::{self, RuneMaterial};
+use gdnative::prelude::*;
 
 #[derive(Debug)]
 struct SpellEffect {
-    effect_type: rune::EffectType,
-    material: rune::RuneMaterial,
+    effect_type: String,
+    material: String,
 }
 
 #[derive(Debug)]
@@ -16,6 +17,16 @@ struct SpellElement {
 #[derive(Debug)]
 pub struct Spell {
     seq: Vec<SpellElement>,
+}
+
+impl Spell {    
+    pub fn new_empty() -> Spell {
+        Spell{seq: Vec::new()}
+    }
+    
+    pub fn to_gdseq(&self) -> Vec<GodotString> {
+        Vec::new()
+    }
 }
 
 fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
@@ -40,7 +51,7 @@ fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
             continue;
         }
 
-        let mut combination: Option<RuneMaterial> = None;
+        let mut combination: Option<String> = None;
         for j in 0..materials.len() {
             if !materials_present[j] {
                 continue;
@@ -51,7 +62,7 @@ fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
                     if combination == None {
                         materials_present[i] = false;
                         materials_present[j] = false;
-                        if let Some(m) = rune::find_mat(m) {
+                        if let Some(m) = rune::find_mat(&m) {
                             result.push(m);
                         }
                         combination = Some(m);
@@ -67,7 +78,7 @@ fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
 
     for i in 0..materials.len() {
         if materials_present[i] {
-            result.push(materials[i]);
+            result.push(materials[i].clone());
         }
     }
 
@@ -76,34 +87,40 @@ fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
 
 fn create_subspell(shape: rune::ShapeRune, materials: &Vec<rune::MatRune>) -> SpellElement {
     let reduced_mat = reduce_runes(materials);
-    let mut result = SpellElement{shape, effects: Vec::new()};
+    let mut result = SpellElement{shape: shape.clone(), effects: Vec::new()};
 
     for m in reduced_mat {
         match shape.effect {
             rune::ShapeEffect::Base => {
-                let effect = SpellEffect{effect_type: m.main_effect, material: m.mat};
+                let effect = SpellEffect{effect_type: m.main_effect, material: m.mat.clone()};
                 result.effects.push(effect);
                 if let Some(e) = m.secondary_effect {
-                    let effect = SpellEffect{effect_type: e, material: m.mat};
+                    let effect = SpellEffect{effect_type: e, material: m.mat.clone()};
                     result.effects.push(effect);
                 }
             },
             rune::ShapeEffect::Invocation => {
                 if m.building_mat {
-                    let effect = SpellEffect{effect_type: rune::EffectType::Invocation, material: m.mat};
+                    let effect = SpellEffect{
+                    effect_type: "invocation".to_string(),
+                    material: m.mat
+                    };
                     result.effects.push(effect);
                 }
             },
             rune::ShapeEffect::Protection => {
                 if m.protection {
-                    let effect = SpellEffect{effect_type: rune::EffectType::Protection, material: m.mat};
+                    let effect = SpellEffect{
+                    effect_type: "protection".to_string(),
+                    material: m.mat
+                    };
                     result.effects.push(effect);
                 }
                 else {
-                    let effect = SpellEffect{effect_type: m.main_effect, material: m.mat};
+                    let effect = SpellEffect{effect_type: m.main_effect, material: m.mat.clone()};
                     result.effects.push(effect);
                     if let Some(e) = m.secondary_effect {
-                        let effect = SpellEffect{effect_type: e, material: m.mat};
+                        let effect = SpellEffect{effect_type: e, material: m.mat.clone()};
                         result.effects.push(effect);
                     }
                 }
@@ -117,19 +134,19 @@ fn create_subspell(shape: rune::ShapeRune, materials: &Vec<rune::MatRune>) -> Sp
 fn create_subspell_seq(shape_seq: &Vec<rune::ShapeRune>,
                        materials: &Vec<rune::MatRune>) -> Vec<SpellElement> {
     let mut result = Vec::new();
-    let mut last = shape_seq[0];
+    let mut last = &shape_seq[0];
     for i in 1..shape_seq.len() {
         let spell_element = SpellElement{
-            shape: last,
+            shape: last.clone(),
             effects: Vec::new()
         };
 
         result.push(spell_element);
 
-        last = shape_seq[i];
+        last = &shape_seq[i];
     }
 
-    result.push(create_subspell(last, materials));
+    result.push(create_subspell(last.clone(), materials));
 
     result
 }

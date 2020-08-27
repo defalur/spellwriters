@@ -57,14 +57,14 @@ fn dshape_parse<'a, It>(rune_seq: &mut Peekable<It>) -> Result<SpellProps, ()>
     //println!("dshape: read shape");
     let mut result = SpellProps{
         mat_props: MatProps{props: Vec::new()},
-        shape_seq: vec![*shape]
+        shape_seq: vec![shape.clone()]
     };
 
     while let Some(r) = rune_seq.peek() {
         match r {
             rune::Rune::Shape(s) => {
                 //println!("dshape: append new shape");
-                result.shape_seq.push(*s);
+                result.shape_seq.push(s.clone());
                 rune_seq.next();
             },
             rune::Rune::Material(_) => {
@@ -92,13 +92,14 @@ fn dmat_parse<'a, It>(rune_seq: &mut Peekable<It>) -> Result<MatProps, ()>
         rune::Rune::Shape(_) => Err(())
     }?;
     //println!("dmat: read mat");
-    let mut result = MatProps{props: vec![*mat]}; 
+    let mut result = MatProps{props: vec![mat.clone()]}; 
     match rune_seq.peek() {
         Some(r) => {
             if let rune::Rune::Material(m) = r {
                 //println!("dmat: calling dmat");
                 result = dmat_parse(rune_seq)?;
-                result.props.push(*mat);
+                //result.props.push(m.clone());
+                result.props.push(m.clone());
             }
             else {
                 //println!("dmat: found shape, end function");
