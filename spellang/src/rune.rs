@@ -1,3 +1,5 @@
+use gdnative::prelude::*;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum RuneShape {
     Projectile,
@@ -101,6 +103,16 @@ pub enum ShapeEffect {
     Protection,
 }
 
+impl ToString for ShapeEffect {
+    fn to_string(&self) -> String {
+        match &self {
+            Self::Base => "base".to_string(),
+            Self::Invocation => "invocation".to_string(),
+            Self::Protection => "protection".to_string()
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct ShapeRune {
     pub shape: String,
@@ -109,6 +121,32 @@ pub struct ShapeRune {
     pub target_ground: bool,
     pub target_entity: bool,
     pub effect: ShapeEffect,
+}
+
+impl ShapeRune {
+    pub fn to_gdseq(&self) -> Vec<GodotString> {
+        let mut result = vec![
+            GodotString::from_str("shaperune"),
+            GodotString::from_str(&self.shape),
+            GodotString::from_str(&self.trigger),
+        ];
+        let mut target = String::new();
+        if self.target_self {
+            target.push('s');
+        }
+        if self.target_ground {
+            target.push('g');
+        }
+        if self.target_entity {
+            target.push('e');
+        }
+        
+        result.push(GodotString::from_str(&target));
+        //result.push(GodotString::from_str(&self.effect.to_string()));
+        result.push(GodotString::from_str("end"));
+        
+        result
+    }
 }
 
 #[derive(Debug, Clone)]

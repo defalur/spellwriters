@@ -8,10 +8,34 @@ struct SpellEffect {
     material: String,
 }
 
+impl SpellEffect {
+    pub fn to_gdseq(&self) -> Vec<GodotString> {
+        vec![
+            GodotString::from_str("spelleffect"),
+            GodotString::from_str(&self.effect_type),
+            GodotString::from_str(&self.material),
+            GodotString::from_str("end")
+        ]
+    }
+}
+
 #[derive(Debug)]
 struct SpellElement {
     shape: rune::ShapeRune,
     effects: Vec<SpellEffect>,
+}
+
+impl SpellElement {
+    pub fn to_gdseq(&self) -> Vec<GodotString> {
+        let mut result = vec![GodotString::from_str("spellelement")];
+        result.extend(self.shape.to_gdseq());
+        for e in self.effects.iter() {
+            result.extend(e.to_gdseq());
+        }
+        result.push(GodotString::from_str("end"));
+        
+        result
+    }
 }
 
 #[derive(Debug)]
@@ -25,7 +49,14 @@ impl Spell {
     }
     
     pub fn to_gdseq(&self) -> Vec<GodotString> {
-        Vec::new()
+        let mut result = vec![GodotString::from_str("spell")];
+        
+        for e in self.seq.iter() {
+            result.extend(e.to_gdseq());
+        }
+        
+        result.push(GodotString::from_str("end"));
+        result
     }
 }
 
@@ -86,7 +117,9 @@ fn reduce_runes(materials: &Vec<rune::MatRune>) -> Vec<rune::MatRune> {
 }
 
 fn create_subspell(shape: rune::ShapeRune, materials: &Vec<rune::MatRune>) -> SpellElement {
+    //godot_print!("{:?}", materials);
     let reduced_mat = reduce_runes(materials);
+    //godot_print!("{:?}", reduced_mat);
     let mut result = SpellElement{shape: shape.clone(), effects: Vec::new()};
 
     for m in reduced_mat {

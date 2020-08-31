@@ -19,7 +19,8 @@ impl SpellCompiler {
 
     #[export]
     fn _ready(&self, _owner: &Node) {
-        godot_print!("Hi!");
+        godot_print!("SpellParser ready!");
+        //godot_print!("{:?}", self.compile_spell(_owner, GodotString::from_str("Pfs")));
     }
 
     #[export]
@@ -33,6 +34,7 @@ impl SpellCompiler {
             Ok(seq) => seq,
             _ => {return Vec::new();}
         };
+        //godot_print!("{:?}", spellseq);
 
         spellprocessing::create_spell(spellseq).to_gdseq()
     }

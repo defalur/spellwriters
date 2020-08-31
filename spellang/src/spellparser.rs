@@ -1,6 +1,8 @@
 use crate::rune;
 use std::iter::Peekable;
 
+use gdnative::prelude::*;
+
 #[derive(Debug)]
 pub struct MatProps {
     pub props: Vec<rune::MatRune>,
@@ -18,6 +20,7 @@ pub struct SpellSeq {
 }
 
 pub fn spell_parse(rune_seq: Vec<rune::Rune>) -> Result<SpellSeq, ()> {
+    //godot_print!("{:?}", rune_seq);
     dspell_parse(&mut rune_seq.iter().peekable())
 }
 
@@ -99,7 +102,7 @@ fn dmat_parse<'a, It>(rune_seq: &mut Peekable<It>) -> Result<MatProps, ()>
                 //println!("dmat: calling dmat");
                 result = dmat_parse(rune_seq)?;
                 //result.props.push(m.clone());
-                result.props.push(m.clone());
+                result.props.push(mat.clone());
             }
             else {
                 //println!("dmat: found shape, end function");
