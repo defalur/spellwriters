@@ -17,7 +17,10 @@ var last_i
 var cast_origin
 var cast_targets
 
-var spells = {"projectile": preload("res://Projectile.tscn")}
+var spells = {
+	"projectile": preload("res://Projectile.tscn"),
+	"area": preload("res://AreaSpell.tscn")
+}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

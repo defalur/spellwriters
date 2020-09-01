@@ -5,7 +5,7 @@ extends Node2D
 # var a = 2
 # var b = "text"
 
-var tilemap
+var tilemap: TileMap
 
 
 # Called when the node enters the scene tree for the first time.
@@ -19,4 +19,4 @@ func _ready():
 
 func snap_to_map(position):
 	var pos = tilemap.world_to_map(position)
-	return tilemap.map_to_world(pos)
+	return tilemap.map_to_world(pos) + tilemap.cell_size / 2
