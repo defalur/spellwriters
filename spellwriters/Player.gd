@@ -23,7 +23,7 @@ func _ready():
 
 func move_to(grid_pos, world):
 	print("Moving to: " + str(grid_pos))
-	if world.check_move(grid_pos):
+	if world.check_collision(grid_pos):
 		position = world.move(entity_id, grid_pos)
 
 

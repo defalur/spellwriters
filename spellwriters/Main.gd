@@ -15,8 +15,9 @@ var cur_spell
 func _ready():
 	#print(self)
 	turn_queue = get_node("TurnQueue")
-	turn_queue.initialize()
 	world = get_node("World")
+	turn_queue.add_character(world.register_player(Vector2(0,0)))
+	turn_queue.add_character(world.register_player(Vector2(0,1)))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -39,18 +40,14 @@ func _unhandled_input(event):
 				var player = turn_queue.get_active_player()
 				var target_pos = world.world_to_map(event.position)
 				
-				player.move_to(target_pos, world)
+				world.move(player, target_pos)
 			else:
 				var player = turn_queue.get_active_player()
+				var player_pos = world.get_entity_pos(player)
 				cur_spell.set_cast_positions(
-					player.position,
-					[world.snap_to_map(event.position)]
+					world.world_to_map(player_pos),
+					[world.world_to_map(event.position)]
 				)
-				cur_spell.cast()
+				cur_spell.cast(world)
 				moving = true
 				cur_spell = null
-
-func request_id(position):
-	var world = get_node("World")
-	var grid_pos = world.world_to_map(position)
-	return world.register_entity(grid_pos)

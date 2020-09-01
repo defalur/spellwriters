@@ -80,12 +80,13 @@ func set_cast_positions(origin, targets):
 	cast_origin = origin
 	cast_targets = targets
 
-func cast():
+func cast(world):
 	print("Casting spell!")
 	var main_node = get_parent()
 	for p in cast_targets:
+		p = world.map_to_world(p)
 		var cur_spell = spells[cur_element.shape].instance()
-		cur_spell.target(cast_origin, p)
+		cur_spell.target(world.map_to_world(cast_origin), p)
 		#print(len(cur_element.materials))
 		if len(cur_element.materials) > 0:
 			cur_spell.change_mat(cur_element.materials[0])

@@ -5,13 +5,16 @@ extends Node2D
 # var a = 2
 # var b = "text"
 
+enum CELL_TYPES { ACTOR, OBJECT, OBSTACLE }
+
 var tilemap: TileMap
+var entities: TileMap
 var entity_id = 0
-var entities : Dictionary
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	tilemap = get_node("TileMap")
+	entities = get_node("EntitiesMap")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -28,18 +31,17 @@ func world_to_map(position):
 func map_to_world(position):
 	return tilemap.map_to_world(position) + tilemap.cell_size / 2
 
-func register_entity(position):
+func register_player(position):
+	return register_entity(position, "player")
+
+func register_entity(position, type):
 	var id = entity_id
 	entity_id += 1
-	entities[id] = position
+	entities.add_entity(position, id, type)
 	return id
 
-func check_move(grid_pos):
-	for p in entities.values():
-		if p == grid_pos:
-			return false
-	return true
-
 func move(id, grid_pos):
-	entities[id] = grid_pos
-	return map_to_world(grid_pos)
+	get_node("EntitiesMap").move_entity(id, grid_pos)
+
+func get_entity_pos(id):
+	return get_node("EntitiesMap").get_entity_pos(id)
