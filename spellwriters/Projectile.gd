@@ -47,3 +47,8 @@ func _on_Area2D_area_exited(area):
 	#print("Enabling damage")
 	active = true
 	#get_node("Area2D/CollisionShape2D").disabled = false
+
+
+func _on_Area2D_area_entered(area):
+	if active:
+		queue_free()

@@ -37,7 +37,9 @@ func _unhandled_input(event):
 		if event.button_index == 1 and event.pressed:
 			if moving:
 				var player = turn_queue.get_active_player()
-				player.move_to(world.snap_to_map(event.position))
+				var target_pos = world.world_to_map(event.position)
+				
+				player.move_to(target_pos, world)
 			else:
 				var player = turn_queue.get_active_player()
 				cur_spell.set_cast_positions(
@@ -47,3 +49,8 @@ func _unhandled_input(event):
 				cur_spell.cast()
 				moving = true
 				cur_spell = null
+
+func request_id(position):
+	var world = get_node("World")
+	var grid_pos = world.world_to_map(position)
+	return world.register_entity(grid_pos)
