@@ -31,3 +31,9 @@ func _on_Player_area_entered(area):
 	var spell = area.get_parent()
 	health -= spell.get_damage()
 	get_node("HealthBar").value = health
+
+func take_damage(dmg):
+	health -= dmg
+
+func update_display():
+	get_node("HealthBar")

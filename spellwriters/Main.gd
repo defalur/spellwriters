@@ -28,7 +28,8 @@ func validate_spell():
 	var spell_str = get_node("MainUi/SpellBox").text
 	var spell = get_node("Spellparser").compile_spell(spell_str)
 	cur_spell = load("res://Spell.tscn").instance()
-	cur_spell.set_data(spell, 0)
+	if not cur_spell.set_data(spell, 0):
+		return
 	add_child(cur_spell)
 	moving = false
 	print(spell)

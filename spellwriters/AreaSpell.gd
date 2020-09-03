@@ -7,6 +7,7 @@ extends Node2D
 
 var max_time = 3
 var cur_time = 0
+var entity_map
 
 var explosiveness = {
 	"fire": 0,
@@ -17,6 +18,7 @@ var explosiveness = {
 func _ready():
 	print("Area Spell ready!")
 	get_node("Particles2D").emitting = true
+	entity_map.update_display()
 	pass # Replace with function body.
 
 
@@ -39,3 +41,12 @@ func target(origin: Vector2, target: Vector2):
 
 func get_damage():
 	return 1
+
+func get_hits(entities_map):
+	entity_map = entities_map
+
+	var grid_pos = entities_map.world_to_map(position)
+	if entities_map.get_cellv(grid_pos) != -1:
+		return [grid_pos]
+	else:
+		return []

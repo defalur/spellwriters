@@ -45,3 +45,6 @@ func move(id, grid_pos):
 
 func get_entity_pos(id):
 	return get_node("EntitiesMap").get_entity_pos(id)
+
+func get_entities():
+	return entities

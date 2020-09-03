@@ -67,14 +67,17 @@ func parse_element(data, i):
 	return [result, i]
 
 func set_data(data, i):
+	if len(data) == 0:
+		return false
 	if data[i] == "spell":
 		i += 1
 	elif data[i] != "spellelement":
-		return
+		return false
 
 	var element_i = parse_element(data, i)
 	cur_element = element_i[0]
 	last_i = element_i[1]
+	return true
 
 func set_cast_positions(origin, targets):
 	cast_origin = origin
@@ -90,6 +93,9 @@ func cast(world):
 		#print(len(cur_element.materials))
 		if len(cur_element.materials) > 0:
 			cur_spell.change_mat(cur_element.materials[0])
+		var hits = cur_spell.get_hits(world.get_entities())
+		for h in hits:
+			world.get_entities().damage_entity(h, cur_spell.get_damage())
 		#print(main_node)
 		main_node.add_child(cur_spell)
 	queue_free()

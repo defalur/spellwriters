@@ -18,6 +18,7 @@ var target_pos
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("Hi!")
+	get_node("HealthBar").value = health
 	pass # Replace with function body.
 
 
@@ -33,3 +34,9 @@ func _process(delta):
 func init_move(target):
 	moving = true
 	target_pos = target
+
+func take_damage(dmg):
+	health -= dmg
+
+func update_display():
+	get_node("HealthBar").value = health

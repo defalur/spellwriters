@@ -10,6 +10,7 @@ var dir
 var max_dist
 onready var dist = 0
 var active = false
+var entity_map
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,6 +22,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if dist >= max_dist:
+		entity_map.update_display()
 		queue_free()
 	var d_position = dir * delta * speed
 	dist += d_position.length()
@@ -38,17 +40,21 @@ func target(origin: Vector2, target: Vector2):
 	dir = (target - origin).normalized()
 
 func get_damage():
-	if active:
-		return 2
-	else:
-		return 0
+	return 2
 
-func _on_Area2D_area_exited(area):
-	#print("Enabling damage")
-	active = true
-	#get_node("Area2D/CollisionShape2D").disabled = false
+func get_hits(entities_map : TileMap):
+	entity_map = entities_map
 
-
-func _on_Area2D_area_entered(area):
-	if active:
-		queue_free()
+	var grid_pos = entities_map.world_to_map(position)
+	var grid_max_dist = max_dist / entities_map.cell_size.x
+	var hits = entities_map.raymarch_grid(grid_pos, dir, grid_max_dist)
+	if len(hits) == 0:
+		return []
+	var final_hit = hits[0]
+	print(hits)
+	for h in hits:
+		if h.distance_to(grid_pos) < final_hit.distance_to(grid_pos): #not optimal in the slightest
+			final_hit = h
+	max_dist = (entities_map.map_to_world(final_hit)
+		+ entities_map.cell_size / 2).distance_to(position)
+	return [final_hit]

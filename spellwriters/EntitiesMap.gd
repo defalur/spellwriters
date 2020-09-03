@@ -52,6 +52,27 @@ func request_move(pawn, cell_target):
 			var pawn_name = get_cell_pawn(cell_target, cell_tile_id).name
 			print("Cell %s contains %s" % [cell_target, pawn_name])
 
+func raymarch_grid(origin : Vector2, direction : Vector2, max_dist = 100):
+	if direction.x != 0 and direction.y != 0:
+		print("Invalid ray direction.")
+		return [] #not managed
+
+	direction = direction / direction.length()
+	var position = origin + direction
+	var result = []
+	while origin.distance_to(position) < max_dist:
+		if get_cellv(position) != -1:
+			result.append(position)
+		position += direction
+	return result
+
+func damage_entity(position, dmg):
+	var cell_tile_id = get_cellv(position)
+	get_cell_pawn(position, cell_tile_id).take_damage(dmg)
+
+func update_display():
+	for node in get_children():
+		node.update_display()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
